@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace DapperDemo.Repository
 {
-    public class CompanyRepository : ICompanyRepository
+    public class CompanyRepositorySP : ICompanyRepository
     {
         private IDbConnection db;
-        public CompanyRepository(IConfiguration configuration)
+        public CompanyRepositorySP(IConfiguration configuration)
         {
             this.db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
@@ -38,14 +38,12 @@ namespace DapperDemo.Repository
 
         public Company Find(int id)
         {
-            var sql = "SELECT * FROM Companies WHERE CompanyId = @CompanyId";
-            return db.Query<Company>(sql, new { @CompanyId = id }).Single();
+            return db.Query<Company>("usp_GetCompany", new { CompanyId = id}, commandType: CommandType.StoredProcedure).SingleOrDefault();
         }
 
         public List<Company> GetAll()
         {
-            var sql = "SELECT * FROM Companies";
-            return db.Query<Company>(sql).ToList();
+            return db.Query<Company>("usp_GetALLCompany", commandType: CommandType.StoredProcedure).ToList();
         }
 
         public void Remove(int id)
