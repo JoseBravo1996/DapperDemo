@@ -26,15 +26,23 @@ namespace DapperDemo.Repository
 
             objCompany.CompanyId = id;
 
-            foreach (var employee in objCompany.Employees)
-            {
-                employee.CompanyId = objCompany.CompanyId;
+            //foreach (var employee in objCompany.Employees)
+            //{
+            //    employee.CompanyId = objCompany.CompanyId;
 
-                var sql1 = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES (@Name, @Title, @Email, @Phone, @CompanyId);"
-                   + "SELECT CAST(SCOPE_IDENTITY() as int);";
+            //    var sql1 = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES (@Name, @Title, @Email, @Phone, @CompanyId);"
+            //       + "SELECT CAST(SCOPE_IDENTITY() as int);";
 
-                var id1 = db.Query<int>(sql1, employee).Single();
-            }
+            //    var id1 = db.Query<int>(sql1, employee).Single();
+            //}
+
+            objCompany.Employees.Select(c => { c.CompanyId = id; return c; }).ToList();
+
+            var sqlEmp = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES (@Name, @Title, @Email, @Phone, @CompanyId);"
+               + "SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            db.Execute(sqlEmp, objCompany.Employees);
+
         }
 
         public List<Company> FilterCompanyByName(string name)
