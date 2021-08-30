@@ -1,2 +1,1 @@
-# DapperDemo
-Curse Dapper - Getting Started
+# Curso Dapper - Getting Started
