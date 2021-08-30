@@ -2,9 +2,11 @@
 using DapperDemo.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Transactions;
 
 namespace DapperDemo.Repository
 {
@@ -44,6 +46,36 @@ namespace DapperDemo.Repository
             db.Execute(sqlEmp, objCompany.Employees);
 
         }
+
+        public void AddTestCompanyWithEmployeesWithTransaction(Company objCompany)
+        {
+            using (var transaction = new TransactionScope())
+            {
+                try
+                {
+                    var sql = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES (@Name, @Address, @City, @State, @PostalCode);"
+                                + "SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                    var id = db.Query<int>(sql, objCompany).Single();
+
+                    objCompany.CompanyId = id;
+
+                    objCompany.Employees.Select(c => { c.CompanyId = id; return c; }).ToList();
+
+                    var sqlEmp = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES (@Name, @Title, @Email, @Phone, @CompanyId);"
+                       + "SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                    transaction.Complete();
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
+
+            }
+        }
+
 
         public List<Company> FilterCompanyByName(string name)
         {
