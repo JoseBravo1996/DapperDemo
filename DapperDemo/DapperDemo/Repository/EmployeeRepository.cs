@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DapperDemo.Repository
 {
@@ -24,6 +25,19 @@ namespace DapperDemo.Repository
             var id = db.Query<int>(sql, employee).Single();
 
             employee.EmployeeId = id;
+
+            return employee;
+
+        }
+
+        public async Task<Employee> AddAsync(Employee employee)
+        {
+            var sql = "INSERT INTO Employees (Name, Title, Email, Phone, CompanyId) VALUES (@Name, @Title, @Email, @Phone, @CompanyId);"
+                    + "SELECT CAST(SCOPE_IDENTITY() as int);";
+
+            var id = await db.QueryAsync<int>(sql, employee);
+
+            employee.EmployeeId = id.Single();
 
             return employee;
 
