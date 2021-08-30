@@ -5,6 +5,11 @@ namespace DapperDemo.Repository
 {
     public interface IBonusRepository
     {
-        List<Employee> GetEmploteeWithCompany();
+        List<Employee> GetEmploteeWithCompany(int id);
+        Company GetCompanyWithEmployees(int id);
+        List<Company> GetAllCompanyWithEmployees();
+        void AddTestCompanyWithEmployees(Company objCompany);
+        void RemoveRange(int[] companyId);
+        List<Company> FilterCompanyByName(string name);
     }
 }

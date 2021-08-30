@@ -21,14 +21,7 @@ namespace DapperDemo.Repository
             var sql = "INSERT INTO Companies (Name, Address, City, State, PostalCode) VALUES (@Name, @Address, @City, @State, @PostalCode);"
                     + "SELECT CAST(SCOPE_IDENTITY() as int);";
            
-            var id = db.Query<int>(sql, new 
-            {
-                company.Name,
-                company.Address,
-                company.City,
-                company.State,
-                company.PostalCode
-            }).Single();
+            var id = db.Query<int>(sql, company).Single();
 
             company.CompanyId = id;
 
