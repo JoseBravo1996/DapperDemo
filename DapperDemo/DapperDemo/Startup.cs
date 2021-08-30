@@ -27,6 +27,7 @@ namespace DapperDemo
             services.AddScoped<ICompanyRepository, CompanyRepositoryContib>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IBonusRepository, BonusRepository>();
+            services.AddScoped<IDapperSprocRepo, DapperSprocRepo>();
             services.AddControllersWithViews();
         }
 

@@ -10,18 +10,21 @@ namespace DapperDemo.Controllers
         private readonly ICompanyRepository _compRepo;
         private readonly IEmployeeRepository _empRepo;
         private readonly IBonusRepository _bonRepo;
+        private readonly IDapperSprocRepo _dapRepo;
 
-        public CompaniesController(ICompanyRepository compRepo, IEmployeeRepository empRepo, IBonusRepository bonRepo)
+        public CompaniesController(ICompanyRepository compRepo, IEmployeeRepository empRepo, IBonusRepository bonRepo, IDapperSprocRepo dapRepo)
         {
             _compRepo = compRepo;
             _empRepo = empRepo;
             _bonRepo = bonRepo;
+            _dapRepo = dapRepo;
         }
 
         // GET: Companies
         public async Task<IActionResult> Index()
         {
-            return View(_compRepo.GetAll());
+            //return View(_compRepo.GetAll());
+            return View(_dapRepo.List<Company>("usp_GetAllCompany"));
         }
 
         // GET: Companies/Details/5
@@ -71,7 +74,8 @@ namespace DapperDemo.Controllers
                 return NotFound();
             }
 
-            var company =  _compRepo.Find(id.GetValueOrDefault());
+            var company = _dapRepo.Single<Company>("usp_GetCompany", new { CompanyId = id.GetValueOrDefault() });
+            //var company =  _compRepo.Find(id.GetValueOrDefault());
             if (company == null)
             {
                 return NotFound();
